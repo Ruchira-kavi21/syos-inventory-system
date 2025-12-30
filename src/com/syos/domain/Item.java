@@ -29,5 +29,25 @@ public class Item {
     public void addBatch(Batch batch) {
         this.batchList.add(batch);
     }
+    public void reduceStock(int quantityNeeded){
+        batchList.sort(new SmartBatchComparator());
+        int remainingQuantity = quantityNeeded;
 
+        for (Batch batch : batchList){
+            if (remainingQuantity == 0) break;
+            int currentStock = batch.getQuantity();
+            if (currentStock > 0){
+                if (currentStock>= remainingQuantity){
+                    batch.decreaseQuantity(remainingQuantity);
+                    remainingQuantity = 0;
+                }else {
+                    batch.decreaseQuantity(currentStock);
+                    remainingQuantity = currentStock;
+                }
+            }
+        }
+        if (remainingQuantity > 0){
+            throw new IllegalArgumentException("Not enough stock available for item: " + name);
+        }
+    }
 }
