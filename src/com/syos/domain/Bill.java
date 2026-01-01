@@ -1,18 +1,19 @@
 package com.syos.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Bill {
     private final String billNumber;
-    private final LocalDate date;
+    private final LocalDateTime date;
     private final double totalAmount;
     private final double discount;
     private final double cashReceived;
     private final double changeAmount;
     private final List<BillItem> items;
 
-    public Bill (String billNumber, LocalDate date, double totalAmount, double discount,
+    public Bill (String billNumber, LocalDateTime date, double totalAmount, double discount,
                 double cashReceived, double changeAmount, List<BillItem> items) {
         this.billNumber = billNumber;
         this.date = date;
@@ -25,7 +26,7 @@ public class Bill {
     public String getBillNumber() {
         return billNumber;
     }
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
     public double getTotalAmount() {
