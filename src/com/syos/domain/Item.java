@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class Item {
+public class Item extends InventoryComponent{
     private final String code;
     private final String name;
     private final double price;
@@ -14,6 +14,7 @@ public class Item {
 
     //constructor
     public Item (String code, String name, double price, int shelfcapacity){
+        super(name, code);
         this.code = code;
         this.name = name;
         this.price = price;
@@ -93,5 +94,13 @@ public class Item {
                 iterator.remove();
             }
         }
+    }
+    public int getShelfQuantity() {
+        return shelfBatches.stream().mapToInt(Batch::getQuantity).sum();
+    }
+
+    @Override
+    public void displayInfo() {
+        System.out.println("- Item: " + getName() + " [" + getCode() + "] | Price: " + price + " | Total Stock: " + getTotalQuantity());
     }
 }
