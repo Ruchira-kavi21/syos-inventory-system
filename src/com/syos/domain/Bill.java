@@ -88,5 +88,9 @@ public class Bill {
         public Bill build() {
             return new Bill(this);
         }
+        public BillBuilder addItemList(List<BillItem> itemList){
+            this.items.addAll(itemList);
+            return this;
+        }
     }
 }
