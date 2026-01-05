@@ -13,7 +13,7 @@ public class Bill {
     private final double changeAmount;
     private final List<BillItem> items;
 
-    public Bill (String billNumber, LocalDateTime date, double totalAmount, double discount,
+    private Bill (String billNumber, LocalDateTime date, double totalAmount, double discount,
                 double cashReceived, double changeAmount, List<BillItem> items) {
         this.billNumber = billNumber;
         this.date = date;
