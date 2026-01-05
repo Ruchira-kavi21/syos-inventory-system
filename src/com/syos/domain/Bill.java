@@ -2,6 +2,7 @@ package com.syos.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Bill {
@@ -13,16 +14,17 @@ public class Bill {
     private final double changeAmount;
     private final List<BillItem> items;
 
-    private Bill (String billNumber, LocalDateTime date, double totalAmount, double discount,
-                double cashReceived, double changeAmount, List<BillItem> items) {
-        this.billNumber = billNumber;
-        this.date = date;
-        this.totalAmount = totalAmount;
-        this.discount = discount;
-        this.cashReceived = cashReceived;
-        this.changeAmount = changeAmount;
-        this.items = items;
+    //constructor using builder pattern
+    private Bill (BillBuilder builder) {
+        this.billNumber = builder.billNumber;
+        this.date = builder.date;
+        this.totalAmount = builder.totalAmount;
+        this.discount = builder.discount;
+        this.cashReceived = builder.cashReceived;
+        this.changeAmount = builder.changeAmount;
+        this.items = builder.items;
     }
+    //getters
     public String getBillNumber() {
         return billNumber;
     }
@@ -43,5 +45,48 @@ public class Bill {
     }
     public List<BillItem> getItems() {
         return items;
+    }
+
+    //Builder class
+    public static class BillBuilder{
+        private String billNumber;
+        private LocalDateTime date;
+        private double totalAmount;
+        private double discount;
+        private double cashReceived;
+        private double changeAmount;
+        private List<BillItem> items = new ArrayList<>();
+
+        public BillBuilder setBillNumber(String billNumber){
+            this.billNumber = billNumber;
+            return this;
+        }
+        public BillBuilder setDate(LocalDateTime date){
+            this.date = date;
+            return this;
+        }
+        public BillBuilder setTotalAmount(double totalAmount){
+            this.totalAmount = totalAmount;
+            return this;
+        }
+        public BillBuilder setDiscount(double discount) {
+            this.discount = discount;
+            return this;
+        }
+        public BillBuilder setCashReceived(double cashReceived){
+            this.cashReceived = cashReceived;
+            return this;
+        }
+        public BillBuilder setChangeAmount(double changeAmount) {
+            this.changeAmount = changeAmount;
+            return this;
+        }
+        public BillBuilder addItem(BillItem item){
+            this.items.add(item);
+            return this;
+        }
+        public Bill build() {
+            return new Bill(this);
+        }
     }
 }
