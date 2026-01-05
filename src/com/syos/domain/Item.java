@@ -1,19 +1,27 @@
 package com.syos.domain;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class Item {
     private final String code;
     private final String name;
     private final double price;
-    private final List<Batch> batchList;
+    private int shelfcapacity;
+    private final List<Batch> storeBatches;
+    private final List<Batch> shelfBatches;
 
-    public Item (String code, String name, double price){
+    //constructor
+    public Item (String code, String name, double price, int shelfcapacity){
         this.code = code;
         this.name = name;
         this.price = price;
-        this.batchList = new ArrayList<>();
+        this.shelfcapacity = shelfcapacity;
+        this.storeBatches = new ArrayList<>();
+        this.shelfBatches = new ArrayList<>();
     }
+    //getters
     public String getCode() {
         return code;
     }
@@ -23,31 +31,67 @@ public class Item {
     public double getPrice() {
         return price;
     }
-    public List<Batch> getBatchList() {
-        return batchList;
+//    public List<Batch> getBatchList() {
+//        return batchList;
+//    }
+//    public void addBatch(Batch batch) {
+//        this.batchList.add(batch);
+//    }
+    public int getTotalQuantity(){
+        int storeQty = storeBatches.stream().mapToInt(Batch::getQuantity).sum();
+        int shelfQty = shelfBatches.stream().mapToInt(Batch::getQuantity).sum();
+        return storeQty + shelfQty;
     }
-    public void addBatch(Batch batch) {
-        this.batchList.add(batch);
+    public void addBatchToStore(Batch batch){
+        this.storeBatches.add(batch);
+        this.storeBatches.sort(new SmartBatchComparator());
     }
-    public void reduceStock(int quantityNeeded){
-        batchList.sort(new SmartBatchComparator());
-        int remainingQuantity = quantityNeeded;
+    public void restockShelf(){
+        int currentShelfQty = shelfBatches.stream().mapToInt(Batch::getQuantity).sum();
+        int spaceOnShelf = shelfcapacity - currentShelfQty;
+        if (spaceOnShelf <= 0 ) return;
 
-        for (Batch batch : batchList){
-            if (remainingQuantity == 0) break;
-            int currentStock = batch.getQuantity();
-            if (currentStock > 0){
-                if (currentStock>= remainingQuantity){
-                    batch.decreaseQuantity(remainingQuantity);
-                    remainingQuantity = 0;
-                }else {
-                    batch.decreaseQuantity(currentStock);
-                    remainingQuantity = currentStock;
-                }
+        Iterator<Batch> iterator = storeBatches.iterator();
+        while (iterator.hasNext() && spaceOnShelf > 0){
+            Batch storeBatch = iterator.next();
+            int qtyToMove = Math.min(spaceOnShelf, storeBatch.getQuantity());
+            if (qtyToMove == storeBatch.getQuantity()){
+                shelfBatches.add(storeBatch);
+                iterator.remove();
+            }else {
+                storeBatch.decreaseQuantity(qtyToMove);
+                Batch newShelfBatch = new Batch(
+                        storeBatch.getBatchNumber() + "-S",
+                        storeBatch.getDateOfPurchase(),
+                        storeBatch.getExpiryDate(),
+                        qtyToMove
+                );
+                shelfBatches.add(newShelfBatch);
             }
+            spaceOnShelf -= qtyToMove;
         }
-        if (remainingQuantity > 0){
-            throw new IllegalArgumentException("Not enough stock available for item: " + name);
+        this.shelfBatches.sort(new SmartBatchComparator());
+    }
+
+    public void reduceStock(int quantityNeeded){
+        int currentShelfQty = shelfBatches.stream().mapToInt(Batch::getQuantity).sum();
+        if (quantityNeeded > currentShelfQty){
+            throw new IllegalArgumentException("Not enough stock on shelf for item: " + name);
+        }
+
+        int remainingQuantity = quantityNeeded;
+        Iterator<Batch> iterator = shelfBatches.iterator();
+
+        while (iterator.hasNext() && remainingQuantity >0 ){
+            Batch batch = iterator.next();
+            int currentStock = batch.getQuantity();
+            if (currentStock > remainingQuantity){
+                batch.decreaseQuantity(remainingQuantity);
+                remainingQuantity = 0;
+            }else {
+                remainingQuantity -= currentStock;
+                iterator.remove();
+            }
         }
     }
 }
