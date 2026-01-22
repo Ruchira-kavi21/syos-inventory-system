@@ -1,13 +1,18 @@
 package com.syos.infrastructure;
 
+import com.syos.domain.Bill;
 import com.syos.domain.Item;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StoreData {
     private static StoreData instance;
     private final Map<String, Item> inventory = new HashMap<>();
+    private final List<Bill> transactionHistory = new ArrayList<>();
+
     private StoreData(){}
 
     public static StoreData getInstance(){
@@ -26,6 +31,14 @@ public class StoreData {
     public Map<String, Item> getInventory() {
         return inventory;
     }
+
+    public void addBill(Bill bill){
+        transactionHistory.add(bill);
+    }
+    public List<Bill> getTransactionHistory(){
+        return transactionHistory;
+    }
+
     public void reset(){
         inventory.clear();
     }
