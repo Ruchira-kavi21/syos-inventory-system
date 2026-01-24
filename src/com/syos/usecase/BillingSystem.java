@@ -1,9 +1,7 @@
 package com.syos.usecase;
 
-import com.syos.domain.Bill;
-import com.syos.domain.BillItem;
-import com.syos.domain.Cart;
-import com.syos.domain.Item;
+import com.syos.domain.*;
+import com.syos.infrastructure.BillDAO;
 import com.syos.infrastructure.StoreData;
 
 import java.time.LocalDateTime;
@@ -13,6 +11,7 @@ import java.util.Map;
 
 public class BillingSystem implements BillingService {
     private final StoreData storeData = StoreData.getInstance();
+    private final BillDAO billDAO = new BillDAO();
     private static int billCounter = 1;
 
     @Override
@@ -42,14 +41,19 @@ public class BillingSystem implements BillingService {
         double discount = 0.0;
 
         String billNumber = String.format("B%05d", billCounter++);
-        return new Bill.BillBuilder()
+        Bill bill = new Bill.BillBuilder()
                 .setBillNumber(billNumber)
                 .setDate(LocalDateTime.now())
+                .setType(TransactionType.IN_STORE)
                 .setTotalAmount(totalAmount)
                 .setDiscount(discount)
                 .setCashReceived(cashTendered)
                 .setChangeAmount(change)
                 .addItemList(billItems)
                 .build();
+        storeData.addBill(bill);
+        billDAO.saveBill(bill);
+
+        return bill;
     }
 }
