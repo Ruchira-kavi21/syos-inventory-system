@@ -13,6 +13,7 @@ public class Bill {
     private final double cashReceived;
     private final double changeAmount;
     private final List<BillItem> items;
+    private final TransactionType type;
 
     //constructor using builder pattern
     private Bill (BillBuilder builder) {
@@ -23,6 +24,7 @@ public class Bill {
         this.cashReceived = builder.cashReceived;
         this.changeAmount = builder.changeAmount;
         this.items = builder.items;
+        this.type = builder.type;
     }
     //getters
     public String getBillNumber() {
@@ -46,16 +48,20 @@ public class Bill {
     public List<BillItem> getItems() {
         return items;
     }
+    public TransactionType getType() {
+        return type;
+    }
 
     //Builder class
     public static class BillBuilder{
         private String billNumber;
         private LocalDateTime date;
+        private TransactionType type;
         private double totalAmount;
         private double discount;
         private double cashReceived;
         private double changeAmount;
-        private List<BillItem> items = new ArrayList<>();
+        private List<BillItem> items;
 
         public BillBuilder setBillNumber(String billNumber){
             this.billNumber = billNumber;
@@ -63,6 +69,10 @@ public class Bill {
         }
         public BillBuilder setDate(LocalDateTime date){
             this.date = date;
+            return this;
+        }
+        public BillBuilder setType(TransactionType type){
+            this.type = type;
             return this;
         }
         public BillBuilder setTotalAmount(double totalAmount){
