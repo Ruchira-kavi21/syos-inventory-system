@@ -109,6 +109,13 @@ public class Item extends InventoryComponent{
     public int getShelfQuantity() {
         return shelfBatches.stream().mapToInt(Batch::getQuantity).sum();
     }
+    public int getStoreQuantity() {
+        int total = 0;
+        for (Batch batch : storeBatches) {
+            total += batch.getQuantity();
+        }
+        return total;
+    }
 
     @Override
     public void displayInfo() {
