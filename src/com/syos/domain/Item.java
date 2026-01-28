@@ -8,17 +8,17 @@ public class Item extends InventoryComponent{
     private final String code;
     private final String name;
     private final double price;
-    private int shelfcapacity;
+    private int shelfCapacity;
     private final List<Batch> storeBatches;
     private final List<Batch> shelfBatches;
 
     //constructor
-    public Item (String code, String name, double price, int shelfcapacity){
+    public Item (String code, String name, double price, int shelfCapacity){
         super(name, code);
         this.code = code;
         this.name = name;
         this.price = price;
-        this.shelfcapacity = shelfcapacity;
+        this.shelfCapacity = shelfCapacity;
         this.storeBatches = new ArrayList<>();
         this.shelfBatches = new ArrayList<>();
     }
@@ -53,7 +53,7 @@ public class Item extends InventoryComponent{
     }
     public void restockShelf(){
         int currentShelfQty = shelfBatches.stream().mapToInt(Batch::getQuantity).sum();
-        int spaceOnShelf = shelfcapacity - currentShelfQty;
+        int spaceOnShelf = shelfCapacity - currentShelfQty;
         if (spaceOnShelf <= 0 ) return;
 
         Iterator<Batch> iterator = storeBatches.iterator();
@@ -109,6 +109,6 @@ public class Item extends InventoryComponent{
 
     @Override
     public void displayInfo() {
-        System.out.println("- Item: " + getName() + " [" + getCode() + "] | Price: " + price + " | Total Stock: " + getTotalQuantity());
+        System.out.println("- Item: " + getName() + " [" + getCode() + "] | Price: " + price + " | Total Stock: " + getTotalQuantity()  + " | Shelf: " + getShelfQuantity() + " | Store: " + (getTotalQuantity() - getShelfQuantity()) );
     }
 }
