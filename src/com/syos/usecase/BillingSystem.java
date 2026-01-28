@@ -40,7 +40,7 @@ public class BillingSystem implements BillingService {
         double change = cashTendered - totalAmount;
         double discount = 0.0;
 
-        String billNumber = String.format("B%05d", billCounter++);
+        String billNumber = "B" + (System.currentTimeMillis() % 100000);
         Bill bill = new Bill.BillBuilder()
                 .setBillNumber(billNumber)
                 .setDate(LocalDateTime.now())
