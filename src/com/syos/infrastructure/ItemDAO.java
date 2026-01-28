@@ -60,7 +60,6 @@ public class ItemDAO {
                     item.addBatchToStore(batch);
                 } else if ("SHELF".equalsIgnoreCase(location)) {
                     item.addBatchToStore(batch);
-                    item.restockShelf();
                 }
             }
         } catch (SQLException e) {
