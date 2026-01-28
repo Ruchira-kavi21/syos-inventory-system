@@ -61,7 +61,7 @@ public class Bill {
         private double discount;
         private double cashReceived;
         private double changeAmount;
-        private List<BillItem> items;
+        private List<BillItem> items = new ArrayList<>();
 
         public BillBuilder setBillNumber(String billNumber){
             this.billNumber = billNumber;
