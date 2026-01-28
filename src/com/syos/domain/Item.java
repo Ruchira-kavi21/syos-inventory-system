@@ -51,6 +51,9 @@ public class Item extends InventoryComponent{
         this.shelfBatches.add(batch);
         this.shelfBatches.sort(new SmartBatchComparator());
     }
+    public List<Batch> getShelfBatches() {
+        return shelfBatches;
+    }
     public void restockShelf(){
         int currentShelfQty = shelfBatches.stream().mapToInt(Batch::getQuantity).sum();
         int spaceOnShelf = shelfCapacity - currentShelfQty;
