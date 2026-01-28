@@ -6,7 +6,11 @@ import java.util.Map;
 public class Cart {
     private final Map<Item, Integer> items = new HashMap<>();
 
-    public void addItem(Item item, int quantity) {
+    public void addItem(Item item, int quantity)
+    {
+        if (quantity > item.getShelfQuantity()) {
+            throw new IllegalArgumentException("Only " + item.getShelfQuantity() + " units available on shelf.");
+        }
         items.put(item, items.getOrDefault(item, 0) + quantity);
     }
     public Map<Item, Integer> getItems(){
