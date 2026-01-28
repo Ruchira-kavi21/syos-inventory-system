@@ -80,8 +80,12 @@ public class Item extends InventoryComponent{
 
     public void reduceStock(int quantityNeeded){
         int currentShelfQty = shelfBatches.stream().mapToInt(Batch::getQuantity).sum();
-        if (quantityNeeded > currentShelfQty){
-            throw new IllegalArgumentException("Not enough stock on shelf for item: " + name);
+        if (quantityNeeded > currentShelfQty) {
+            restockShelf();
+            currentShelfQty = getShelfQuantity();
+            if (quantityNeeded > currentShelfQty) {
+                throw new IllegalArgumentException("Not enough stock for item: " + name);
+            }
         }
 
         int remainingQuantity = quantityNeeded;
