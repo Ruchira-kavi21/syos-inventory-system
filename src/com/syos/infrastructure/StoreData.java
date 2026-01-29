@@ -21,7 +21,7 @@ public class StoreData {
         }
         return instance;
     }
-    public void addIem(Item item){
+    public void addItem(Item item){
         inventory.put(item.getCode(), item);
     }
     public Item getItem (String code){
