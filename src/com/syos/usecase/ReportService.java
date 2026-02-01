@@ -63,13 +63,11 @@ public class ReportService {
         boolean actionNeeded = false;
         for (Item item : storeData.getInventory().values()) {
             int currentShelf = item.getShelfQuantity();
-            // FIX: Use item.getCap() or the database capacity column.
-            // If getCap() is missing in Item.java, assume standard capacity of 20 for this report
-            int maxCap = 20; // Or item.getShelfCapacity() if you added that getter
+
+            int maxCap = 20;
             int needed = maxCap - currentShelf;
 
             if (needed > 0 && item.getStoreQuantity() > 0) {
-                // Only ask to move if we actually have stock in the back!
                 int canMove = Math.min(needed, item.getStoreQuantity());
                 System.out.printf("%-20s | %-10d | %-10d | %-10d%n",
                         item.getName(), currentShelf, maxCap, canMove);
