@@ -39,8 +39,8 @@ public class Main {
             System.out.println("2. Add Item to Cart");
             System.out.println("3. Checkout");
             System.out.println("4. Reports");
-            System.out.println("6. Clear Cart");
-            System.out.println("5. Exit");
+            System.out.println("5. Clear Cart");
+            System.out.println("6. Exit");
             System.out.print("Select option: ");
 
             int choice = scanner.nextInt();
@@ -51,7 +51,7 @@ public class Main {
                 case 1 -> {
                     System.out.println("\n--- AVAILABLE ITEMS & BATCH DETAILS ---");
                     for (Item item : storeData.getInventory().values()) {
-                        System.out.println("\n📦 " + item.getName() + " (Total Shelf: " + item.getShelfQuantity() + ")");
+                        System.out.println("\n📦 " + item.getName() + " [" + item.getCode() + "] (Total Shelf: " + item.getShelfQuantity() + ")");
 
                         for (Batch b : item.getShelfBatches()) {
                             System.out.printf("   - Batch: %-10s | Exp: %-10s | Qty: %d%n",
@@ -132,12 +132,12 @@ public class Main {
                 }
 
                 case 5 -> {
-                    running = false;
-                    System.out.println("Exiting system...");
-                }
-                case 6 -> {
                     cart.clearCart();
                     System.out.println("Cart cleared.");
+                }
+                case 6 -> {
+                    running = false;
+                    System.out.println("Exiting system...");
                 }
 
                 default -> System.out.println("Invalid option.");
