@@ -123,10 +123,10 @@ public class Main {
 
                     switch (r) {
                         case 1 -> reportService.generateDailySalesReport();
-                        case 2 -> reportService.generateStockValueReport(); // New
+                        case 2 -> reportService.generateStockValueReport();
                         case 3 -> reportService.generateReshelvingReport();
                         case 4 -> reportService.generateLowStockReport();
-                        case 5 -> reportService.generateTransactionSummary(); // New
+                        case 5 -> reportService.generateTransactionSummary();
                         default -> System.out.println("Invalid report option.");
                     }
                 }
