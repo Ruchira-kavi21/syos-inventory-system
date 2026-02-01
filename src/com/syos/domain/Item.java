@@ -105,6 +105,7 @@ public class Item extends InventoryComponent{
                 iterator.remove();
             }
         }
+        restockShelf();
     }
     public int getShelfQuantity() {
         return shelfBatches.stream().mapToInt(Batch::getQuantity).sum();
