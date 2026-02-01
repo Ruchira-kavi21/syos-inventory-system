@@ -117,6 +117,9 @@ public class Item extends InventoryComponent{
         }
         return total;
     }
+    public List<Batch> getStoreBatches() {
+        return storeBatches;
+    }
 
     @Override
     public void displayInfo() {

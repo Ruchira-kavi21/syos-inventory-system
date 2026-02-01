@@ -2,6 +2,7 @@ package com.syos.usecase;
 
 import com.syos.domain.*;
 import com.syos.infrastructure.BillDAO;
+import com.syos.infrastructure.ItemDAO;
 import com.syos.infrastructure.StoreData;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ import java.util.Map;
 public class BillingSystem implements BillingService {
     private final StoreData storeData = StoreData.getInstance();
     private final BillDAO billDAO = new BillDAO();
-    private static int billCounter = 1;
+//    private static int billCounter = 1;
 
     @Override
     public Bill processTransaction(Cart cart, double cashTendered){
@@ -26,12 +27,14 @@ public class BillingSystem implements BillingService {
             throw new IllegalArgumentException("Insufficient cash. Total is: " + totalAmount);
         }
 
+        ItemDAO inventoryUpdater = new ItemDAO();
         List<BillItem> billItems = new ArrayList<>();
         for (Map.Entry<Item, Integer> entry : cart.getItems().entrySet()){
             Item item = entry.getKey();
             int qtyNeeded = entry.getValue();
 
             item.reduceStock(qtyNeeded);
+            inventoryUpdater.syncItemInventory(item);
 
             double lineTotal = item.getPrice() * qtyNeeded;
             billItems.add(new BillItem(item.getName(), qtyNeeded, item.getPrice(), lineTotal));
