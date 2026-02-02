@@ -67,19 +67,30 @@ public class ItemDAO {
         }
     }
     public void syncItemInventory(Item item) {
+        String itemSql = "INSERT INTO items (code, name, price, shelf_capacity) VALUES (?, ?, ?, ?) " +  "ON DUPLICATE KEY UPDATE name=VALUES(name), price=VALUES(price), shelf_capacity=VALUES(shelf_capacity)";
+
         String deleteSql = "DELETE FROM batches WHERE item_code = ?";
         String insertSql = "INSERT INTO batches (batch_number, item_code, purchase_date, expiry_date, quantity, location) VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
-            // 1. Wipe the old state for this item
+
+            PreparedStatement itemStmt = connection.prepareStatement(itemSql);
+            itemStmt.setString(1, item.getCode());
+            itemStmt.setString(2, item.getName());
+            itemStmt.setDouble(3, item.getPrice());
+            itemStmt.setInt(4, item.getShelfQuantity());
+            itemStmt.executeUpdate();
+            itemStmt.close(); // Close strictly
+
+            // Wipe the old batches
             PreparedStatement deleteStmt = connection.prepareStatement(deleteSql);
             deleteStmt.setString(1, item.getCode());
             deleteStmt.executeUpdate();
+            deleteStmt.close();
 
-            // 2. Prepare to save the NEW state
             PreparedStatement insertStmt = connection.prepareStatement(insertSql);
 
-            // 3. Save Back Store Batches
+            // Save Back Store Batches
             for (Batch b : item.getStoreBatches()) {
                 insertStmt.setString(1, b.getBatchNumber());
                 insertStmt.setString(2, item.getCode());
@@ -90,7 +101,7 @@ public class ItemDAO {
                 insertStmt.addBatch();
             }
 
-            // 4. Save Front Shelf Batches
+            // Save Front Shelf Batches
             for (Batch b : item.getShelfBatches()) {
                 insertStmt.setString(1, b.getBatchNumber());
                 insertStmt.setString(2, item.getCode());
@@ -103,6 +114,7 @@ public class ItemDAO {
 
             // Execute all updates
             insertStmt.executeBatch();
+            insertStmt.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
